@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>time</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .shell {
+            width: 100%;
+            position: relative;
+            padding: 80px 0;
+            transition: 0.3s ease 0s;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .shell:before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(99, 99, 99, 0.8);
+            content: "";
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .title {
+            color: #fff;
+            font-size: 46px;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .timeline {
+            display: flex;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            flex-direction: column;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .content-title {
+            font-weight: normal;
+            font-size: 66px;
+            margin: -10px 0 0 0;
+            transition: 0.4s;
+            padding: 0 10px;
+            box-sizing: border-box;
+            color: #fff;
+        }
+
+        .content-desc {
+            margin: 0;
+            font-size: 15px;
+            box-sizing: border-box;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 25px;
+        }
+
+        .timeline:before {
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            margin-left: -1px;
+            content: "";
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .item {
+            padding: 40px 0;
+            opacity: 0.3;
+            filter: blur(2px);
+            transition: 0.5s;
+            box-sizing: border-box;
+            width: calc(50% - 40px);
+            display: flex;
+            position: relative;
+            transform: translateY(-80px);
+        }
+
+        .item:before {
+            content: attr(data-text);
+            letter-spacing: 3px;
+            width: 100%;
+            position: absolute;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            border-left: 2px solid rgba(255, 255, 255, 0.5);
+            top: 70%;
+            margin-top: -5px;
+            padding-left: 15px;
+            opacity: 0;
+            right: calc(-100% - 56px);
+            font: 900 20px '';
+            letter-spacing: 5px;
+        }
+
+        .item:nth-child(even) {
+            align-self: flex-end;
+        }
+
+        .item:nth-child(even):before {
+            right: auto;
+            text-align: right;
+            left: calc(-100% - 56px);
+            padding-left: 0;
+            border-left: none;
+            border-right: 2px solid rgba(255, 255, 255, 0.5);
+            padding-right: 15px;
+        }
+
+        .item--active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0px);
+        }
+
+        .item--active:before {
+            top: 50%;
+            transition: 0.3s all 0.2s;
+            opacity: 1;
+        }
+
+        .item--active .content-title {
+            margin: -50px 0 20px 0;
+        }
+
+        .img {
+            max-width: 100%;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            letter-spacing: 5px;
+            margin: 10px 0 0 0;
+            font-weight: normal;
+        }
+
+        .footer {
+            padding: 95px 0;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #999;
+            display: inline-block;
+        }
+
+        @media only screen and (max-width: 767px) {
+            .item {
+                align-self: baseline !important;
+                width: 100%;
+                padding: 0 30px 150px 80px;
+            }
+
+            .item:before {
+                left: 10px !important;
+                padding: 0 !important;
+                top: 50px;
+                text-align: center !important;
+                width: 60px;
+                border: none !important;
+            }
+
+            .item:last-child {
+                padding-bottom: 40px;
+            }
+        }
+
+        @media only screen and (max-width: 767px) {
+            .timeline:before {
+                left: 40px;
+            }
+        }
+    </style>
+    <style>
+        .button {
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: 300;
+            font-size: 0.3em;
+            padding: 0.75em 1em;
+            color: rgb(242, 242, 247);
+            border: 0.15em solid rgb(230, 230, 233);
+            border-radius: 2em;
+            transition: 4s;
+        }
+
+        .button:before,
+        .button:after {
+            content: "";
+            position: absolute;
+            top: -1.5em;
+            z-index: -1;
+            width: 200%;
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 40%;
+            background-color: rgba(0, 0, 255, 0.25);
+            transition: 4s;
+        }
+
+        .button:before {
+            left: -80%;
+            transform: translate3d(0, 5em, 0) rotate(-340deg);
+        }
+
+        .button:after {
+            right: -80%;
+            transform: translate3d(0, 5em, 0) rotate(390deg);
+        }
+
+        .button:hover,
+        .button:focus {
+            color: white;
+        }
+
+        .button:hover:before,
+        .button:hover:after,
+        .button:focus:before,
+        .button:focus:after {
+            transform: none;
+            background-color: rgba(94, 94, 216, 0.75);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="shell" id="shell">
+        <div class="header">
+            <h2 class="title">亚运会的发展历程</h2>
+            <h3 class="subtitle">History of Asian Games</h3>
+        </div>
+        <div class="timeline">
+            <div class="item" data-text="《思想起源——创立》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211843.jpg" alt="" class="img">
+                    <h2 class="content-title">追溯到1949年</h2>
+                    <p class="content-desc">
+                        亚洲各国的体育代表在新德里举行的亚洲运动会会议上提出了创办亚洲运动会的构想。
+                    </p>
+                </div>
+            </div>
+
+            <div class="item" data-text="《雏形--第一届亚运会》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211819.jpgg" alt="" class="img">
+                    <h2 class="content-title">1951</h2>
+                    <p class="content-desc">
+                        第一届亚洲运动会于1951年3月4日至11日在印度新德里举行。共有11个亚洲国家参加了比赛，共设9个项目</p>
+                </div>
+            </div>
+
+            <div class="item" data-text="《发展与壮大》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211735.jpg" alt="" class="img">
+                    <h2 class="content-title">1951-今</h2>
+                    <p class="content-desc">
+                        亚运会在接下来的几十年里不断发展壮大。参赛国家和项目数量逐渐增加，各届亚运会的规模和影响力也逐渐扩大。
+                    </p>
+                </div>
+            </div>
+
+            <div class="item" data-text="《亚运会的周期》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211843.jpg" alt="" class="img">
+                    <h2 class="content-title">2-4年</h2>
+                    <p class="content-desc">
+                        最初，亚运会的周期是4年一届，但后来改为2年一届。自第二届亚运会开始，亚运会的周期一直保持次4年一届。</p>
+                </div>
+            </div>
+
+            <div class="item" data-text="《亚运会的举办地》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211648.jpg" alt="" class="img">
+                    <h2 class="content-title">2014</h2>
+                    <p class="content-desc">
+                        亚运会的举办地在各个亚洲国家轮流举办。自创立以来，亚运会已经在亚洲各地的许多城市举办，包括曼谷、东京、雅加达、首尔、北京等。
+                    </p>
+                </div>
+            </div>
+
+            <div class="item" data-text="《亚运会的发展与变革》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211715.jpg" alt="" class="img">
+                    <h2 class="content-title"></h2>
+                    <p class="content-desc">
+                        随着时间的推移，亚运会逐渐引入了新的项目和规则，以适应体育发展的需求。例如，从1982年开始，亚运会开始设立残奥会项目，为残疾人运动员提供竞技平台
+                    </p>
+                </div>
+            </div>
+            
+            <div class="item" data-text="《亚运会的影响力》">
+                <div class="content">
+                    <img src="实验/微信图片_20231107211758.jpg" alt="" class="img">
+                    <h2 class="content-title"></h2>
+                    <p class="content-desc">
+                        亚运会成为亚洲地区最重要的体育盛会之一，吸引了来自亚洲各国的顶尖运动员参加比赛。亚运会也为亚洲国家提供了展示自己体育实力和文化魅力的机会。
+                        总的来说，亚运会的发展历程见证了亚洲地区体育事业的蓬勃发展和亚洲国家间的友好交流。它不仅促进了亚洲各国之间的体育交流，也为亚洲运动员提供了展示自己才华的舞台。
+                        亚运会的成功举办也为亚洲地区的体育发展做出了重要贡献
+                    </p>
+                </div>
+            </div>
+
+         
+
+
+            <!-- <div class="item" data-text="《Xception一种极端的Inception》">
+                <div class="content">
+                    <img src="971c1f620a6cbb162c10d9eec4135b6.jpg" alt="" class="img">
+                    <h2 class="content-title">2016</h2>
+                    <p class="content-desc">
+                        Google 利用 Depthwise Separable Convolution 对 Inception V3 进行了改进，并结合 Residual Connection
+                        设计了新的网络：Xception（Xception取义自Extreme Inception，即Xception是一种极端的Inception）<br>
+                        <a href="new2.html"><span> 相关基础知识学习</span>  </a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="item" data-text="《Xception一种极端的Inception》">
+                <div class="content">
+                    <img src="28.jpg" alt="" class="img">
+                    <h2 class="content-title">2016</h2>
+                    <p class="content-desc">
+                        Google 利用 Depthwise Separable Convolution 对 Inception V3 进行了改进，并结合 Residual Connection
+                        设计了新的网络：Xception（Xception取义自Extreme Inception，即Xception是一种极端的Inception）<br>
+                        <a href="new2.html"><span> 相关基础知识学习</span>  </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+
+          
+
+
+
+    <!-- <a class="button" href="new2.html"><span>相关知识学习</span></a> -->
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+
+        (function ($) {
+            $.fn.timeline = function () {
+                var selectors = {
+                    id: $(this),
+                    item: $(this).find(".item"),
+                    activeClass: "item--active",
+                    img: ".img"
+                };
+                // 将第一个时间轴项目激活，并设置时间轴背景图片为第一个项目的图片
+                selectors.item.eq(0).addClass(selectors.activeClass);
+                selectors.id.css(
+                    "background-image",
+                    "url(" +
+                    selectors.item.first()
+                        .find(selectors.img)
+                        .attr("src") +
+                    ")"
+                );
+                // 获取时间轴项目的总数
+                var itemLength = selectors.item.length;
+                // 当页面滚动时，触发滚动事件
+                $(window).scroll(function () {
+                    var max, min;
+                    // 获取页面滚动的距离
+                    var pos = $(this).scrollTop();
+                    selectors.item.each(function (i) {
+                        // 获取当前时间轴项目的最小和最大高度
+                        min = $(this).offset().top;
+                        max = $(this).height() + $(this).offset().top;
+                        var that = $(this);
+                        // 如果滚动到最后一个项目，并且超过了当前项目高度的一半，
+                        // 则将最后一个项目设置为激活状态，并设置背景图片为最后一个项目的图片
+                        if (i == itemLength - 2 && pos > min + $(this).height() / 2) {
+                            selectors.item.removeClass(selectors.activeClass);
+                            selectors.id.css(
+                                "background-image",
+                                "url(" +
+                                selectors.item.last()
+                                    .find(selectors.img)
+                                    .attr("src") +
+                                ")"
+                            );
+                            selectors.item.last().addClass(selectors.activeClass);
+                        }
+                        // 如果当前滚动位置在当前项目的最小和最大高度之间，
+                        // 则将当前项目设置为激活状态，并设置背景图片为当前项目的图片
+                        else if (pos <= max - 10 && pos >= min) {
+                            selectors.id.css(
+                                "background-image",
+                                "url(" +
+                                $(this)
+                                    .find(selectors.img)
+                                    .attr("src") +
+                                ")"
+                            );
+                            selectors.item.removeClass(selectors.activeClass);
+                            $(this).addClass(selectors.activeClass);
+                        }
+                    });
+                });
+            };
+        })(jQuery)
+        /*
+        最后，我们调用 timeline 插件并传入时间轴的 ID 作为参数。
+        这将启用时间轴插件并为该时间轴绑定滚动事件。
+        */
+        $("#shell").timeline();
+
+
+    </script>
+</body>
+
+</html>
